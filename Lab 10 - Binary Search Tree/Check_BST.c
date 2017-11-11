@@ -3,13 +3,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #define inf ((int)(1e9))
 
 typedef struct binary_tree
 {
 	int data;
-	int maxi, mini;
-	int min, max;
 	struct binary_tree *left, *right;
 }node;
 
@@ -18,23 +17,17 @@ node *get_new_node(int num)
 	node *t = (node*)malloc(sizeof(node));
 	t->left = NULL;
 	t->right = NULL;
-
-	t->mini = inf;
-	t->min = inf;
-
-	t->maxi = -inf;
-	t->max = -inf;
-
 	t->data = num;
 	return t;
 }
 
-int bst(node *cur)
+int bst(node *cur, int a, int b)
 {
 	if(cur == NULL)
 		return 1;
-	if((cur->maxi < cur->mini) && (cur->maxi < cur->data) && (cur->mini > cur->data))
-		return bst(cur->left)*bst(cur->right);
+
+	if(a < cur->data && cur->data < b)
+		return (bst(cur->left, a, cur->data) & bst(cur->right, cur->data, b));
 	return 0;
 }
 
@@ -49,48 +42,17 @@ void add(int num, node *cur)
 
 	if(ch==0)
 	{
-		if(cur->min > num)
-			cur->min = num;
-		if(cur->max < num)
-			cur->max = num;
-
 		if(cur->left)
-		{
 			add(num, cur->left);
-			if(cur->maxi < num)
-				cur->maxi = num;
-		}
 		else
-		{
-			t = get_new_node(num);
-			cur->left = t;
-			cur->maxi = num;
-			t->max = t->min = num;
-			
-		}
-
+			cur->left = get_new_node(num);
 	}
 	else
 	{
-		if(cur->min > num)
-				cur->min = num;
-			if(cur->max < num)
-				cur->max = num;
-
 		if(cur->right)
-		{
 			add(num, cur->right);
-			if(cur->mini > num)
-				cur->mini = num;
-		}
 		else
-		{
-			t = get_new_node(num);
-			cur->right = t;
-			cur->mini = num;
-			t->max = t->min = num;
-			
-		}
+			cur->right = get_new_node(num);
 	}
 }
 
@@ -140,9 +102,6 @@ void main()
 		printf("\nCurrent tree : ");
 		print_tree(root);
 
-		//if(root)
-		//printf("\n%d__%d__%d__%d\n", root->mini, root->min, root->maxi, root->max);
-
 		printf("\n1. Insert node\n2. Check if BST\nx. Exit");
 		printf("\nEnter your choice : ");
 		scanf("%d", &ch);
@@ -161,7 +120,7 @@ void main()
 		}
 		else if(ch==2)
 		{
-			if(bst(root))
+			if(bst(root, -inf, inf))
 				printf("\nIt is a BST\n");
 			else
 				printf("\nIt is not a BST\n");
@@ -170,3 +129,49 @@ void main()
 		
 	}while(ch==1);
 }
+
+/*
+
+Test Case 1:
+1 5
+1 2 0
+1 8 1
+1 4 0 1
+1 0 0 0
+1 6 1 0
+1 3 0 1 0
+
+Output:
+It is a BST
+
+     5
+   /   \
+  2     8
+ / \   /
+0   4 6
+   /
+  3 
+
+x-------------x
+
+Test Case 1:
+1 5
+1 2 0
+1 1 1
+1 4 0 1
+1 0 0 0
+1 6 1 0
+1 3 0 1 0
+
+Output:
+It is a BST
+
+     5
+   /   \
+  2     8
+ / \   /
+0   4 1
+   /
+  3 
+
+*/
