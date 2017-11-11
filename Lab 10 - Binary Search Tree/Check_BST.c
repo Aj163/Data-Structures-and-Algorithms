@@ -154,7 +154,7 @@ It is a BST
 
 x-------------x
 
-Test Case 1:
+Test Case 2:
 1 5
 1 2 0
 1 1 1
