@@ -138,7 +138,7 @@ void dijkstra()
 			if(dis[temp->node] > dis[x] + temp->weight)
 			{
 				dis[temp->node] = dis[x] + temp->weight;
-				priority_enqueue(temp->weight ,temp->node);
+				priority_enqueue(dis[temp->node], temp->node);
 			}
 			temp = temp->next;
 		}
@@ -180,7 +180,7 @@ int main()
 
 /*
 
-Test Case:
+Test Case 1:
 5 5
 0 1 5
 0 2 2
@@ -190,5 +190,20 @@ Test Case:
 
 Output:
 0 5 2 3 7
+
+x-------------x
+
+Test Case 2:
+7 7
+0 1 1
+0 2 4
+1 3 6
+2 4 5
+3 5 1
+4 5 1
+5 6 1
+
+Output:
+0 1 4 7 9 8 9
 
 */
