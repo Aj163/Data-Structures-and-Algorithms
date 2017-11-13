@@ -1,6 +1,10 @@
+//Delete a node while temp is at that node.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define inf -1e9
 
 typedef struct linked_list
 {
@@ -13,13 +17,7 @@ node *head=NULL, *temp, *t;
 void insert(int pos, int n)
 {
 	int ctr=2;
-	if(head==NULL)
-	{
-		head = (node*)malloc(sizeof(node));
-		head->num = n;
-		head->next = NULL;
-	}
-	else if(pos==1)
+	if(pos==1 || head->num==inf)
 	{
 		temp = (node*)malloc(sizeof(node));
 		temp->next = head;
@@ -30,7 +28,7 @@ void insert(int pos, int n)
 	{
 		t = head->next;
 		temp = head;
-		while(ctr<pos && t!=NULL)
+		while(ctr<pos && t->num!=inf)
 		{
 			t = t->next;
 			temp = temp->next;
@@ -44,33 +42,42 @@ void insert(int pos, int n)
 	}
 }
 
-void reverse()
+void delete(int pos)
 {
-	node *prev;
-	if(head==NULL || head->next==NULL)
+	int ctr=1;
+	if(head->num==inf)
 		return;
-	
-	prev = NULL;
-	temp = head;
-	t = temp->next;
-
-	while(t!=NULL)
+	else if(pos==1)
 	{
-		temp->next = prev;
-		prev = temp;
-		temp = t;
-		t = t->next;
+		temp = head;
+		head = head->next;
+		temp->next = NULL;
+		free(temp);
 	}
+	else
+	{
+		t = head->next;
+		temp = head;
+		while(ctr<pos && t->num!=inf)
+		{
+			t = t->next;
+			temp = temp->next;
+			ctr++;
+		}
 
-	temp->next = prev;
-	head = temp;
+		temp->num = t->num;
+		temp->next = t->next;
+		t->next = NULL;
+		free(t);
+		
+	}
 }
 
 void display()
 {
 	printf("\nCurrent list is\n");
 	temp = head;
-	while(temp != NULL)
+	while(temp->num != inf)
 	{
 		printf("%d -> ", temp->num);
 		temp = temp->next;
@@ -82,9 +89,13 @@ void main()
 {
 	int ch, n, p;
 
+	head = (node*)malloc(sizeof(node));
+	head->num = inf;
+	head->next = NULL;
+
 	do
 	{
-		printf("\n1. Insert node\n2. Reverse List\nx. Any other number to exit.\n");
+		printf("\n1. Insert node\n2. Delete node\nx. Any other number to exit.\n");
 		printf("Enter your choice : ");
 		scanf("%d", &ch);
 
@@ -98,7 +109,10 @@ void main()
 		}
 		else if(ch==2)
 		{
-			reverse();
+			printf("\nEnter valid position : ");
+			scanf("%d", &p);
+
+			delete(p);
 			display();
 		}
 	}while(ch>=1 && ch<=2);
